@@ -17,4 +17,4 @@ le support de cours de 2020 - 2021
 
 * Qu'est-ce que ça veut dire pour vous "intégration de données connectées" ? intégration des données connectées veut dire l'utilisation des données qui interagissent entre elles
 
-* En quoi cela peut vous servir dans un parcours Dats Science ? 
+* En quoi cela peut vous servir dans un parcours Dats Science ? f
