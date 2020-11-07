@@ -58,7 +58,7 @@ oReq.onload = function(e) {
 oReq.send();
 
 
-function myFunction() {
+function Affichage() {
     // document.getElementById("demo").innerHTML = worksheetf[105]['Source : SDES-RSVERO '];
     //document.getElementById("demo").innerHTML = worksheetf[106]['Source : SDES-RSVERO '];
     var i;
@@ -84,11 +84,5 @@ function myFunction() {
         }
 
     }
-    // var x = document.getElementById("mySelect");
-    // var option = document.createElement("option");
-    // option.text = "Kiwi";
-    // x.add(option);
 }
 
-
-// Close the dropdown menu if the user clicks outside of it
