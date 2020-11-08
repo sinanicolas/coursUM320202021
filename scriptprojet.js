@@ -10,7 +10,8 @@ fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/r
         response.json().then(function(data){
             console.log(data);
             result = data;
-            console.log(result["features"][0]["properties"]["lib_dep"])
+            result["features"][3]["properties"]["lib_dep"] = "BOUCHES-DU-RHÔNE";
+
         })
     }
 );
@@ -47,18 +48,26 @@ oReq.onload = function(e) {
     var worksheet = workbook.Sheets[first_sheet_name];
     worksheetf = XLSX.utils.sheet_to_json(worksheet,{raw:true});
 
-    var fd = JSON.stringify(worksheetf)
+
     console.log(worksheetf)
     console.log(worksheetf[104]['Source : SDES-RSVERO '].toUpperCase()) // genere le nom du departement
-    console.log(worksheetf[105]['__EMPTY_15'].toString()  + " beb")
+    console.log(worksheetf[104]['__EMPTY'].toString()  + " beb")
     console.log(typeof worksheetf[105]['Source : SDES-RSVERO ']);
     console.log(typeof worksheetf[105]['__EMPTY_15'].toString());
+    console.log(typeof worksheetf)
+    MiseEnFormeJson()
+
 }
 
 oReq.send();
 
 
+
+
 function Affichage() {
+    //console.log(result["features"][0]["properties"]["pm10_kg"])
+    //console.log(result["features"][0]["properties"]["so2_kg"])
+    //console.log(result["features"][0]["properties"]["lib_dep"])
     // document.getElementById("demo").innerHTML = worksheetf[105]['Source : SDES-RSVERO '];
     //document.getElementById("demo").innerHTML = worksheetf[106]['Source : SDES-RSVERO '];
     var i;
@@ -66,65 +75,176 @@ function Affichage() {
         var paragraph = document.getElementById("demo");
         var e = document.getElementById("dep");
         var strUser = e.options[e.selectedIndex].text;
-        // console.log(e.options[e.selectedIndex].text)
+        // console.log(e.options[e.selectedIndex].text.toUpperCase())
         // console.log(worksheetf[i]['Source : SDES-RSVERO '].toUpperCase())
 
+        console.log(e.options[e.selectedIndex].text.toUpperCase())
+        console.log(worksheetf[i]['departement'].toUpperCase())
+        if(e.options[e.selectedIndex].text.toUpperCase() === worksheetf[i]['departement'].toUpperCase()){
+            console.log("ddjdj")
+            for(z=0;z<=5;z++){
+                console.log(result["features"][z]["properties"]["lib_dep"].toUpperCase())
+                if(e.options[e.selectedIndex].text.toUpperCase() === result["features"][z]["properties"]["lib_dep"].toUpperCase()){
+                    document.getElementById("demo").innerHTML = "";
+                    document.getElementById("pop").innerHTML = "";
 
-        if(e.options[e.selectedIndex].text.toUpperCase() === worksheetf[i]['Source : SDES-RSVERO '].toUpperCase() ){
-            document.getElementById("demo").innerHTML = "";
+                    var str1 = document.createTextNode(worksheetf[i]['departement'] + "  " +
+                        worksheetf[i]['TotalVoiture'].toString() + "  " + worksheetf[i]['CamTotal'].toString()+ " " +
+                        result["features"][z]["properties"]["so2_kg"] + " " + result["features"][z]["properties"]["pm10_kg"]);
+                    var saut = document.createElement("br");
+                    paragraph.appendChild(str1);
+                    paragraph.appendChild(saut);
+                }
+            }
 
-
-            var str1 = document.createTextNode(worksheetf[i]['Source : SDES-RSVERO '] + "  " +
-                worksheetf[i]['__EMPTY'].toString() + "  " + worksheetf[i]['__EMPTY_1'].toString());
-            var saut = document.createElement("br");
-            paragraph.appendChild(str1);
-            paragraph.appendChild(saut);
-
-
-            var width = 900,
-            height = 300,
-            pad = 20,
-            left_pad = 100;
-            var x = d3.scale.ordinal().rangeRoundBands([left_pad, width-pad], 0.1);
-            var y = d3.scale.linear().range([height-pad, pad]);
-            var xAxis = d3.svg.axis().scale(x).orient("bottom");
-            var yAxis = d3.svg.axis().scale(y).orient("left");
-            var svg = d3.select("#graph")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height);
-            d3.json('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/resource/faa81490-2a38-42e5-8a43-3b326ba5fce9/download/geoserver-getfeature.application', function (data) {
-              data = d3.keys(data).map(function (key) {
-                return {bucket: Number(key),
-                  N: data[key]};
-                });
-              x.domain(data.map(function (d) { return d.bucket; }));
-              y.domain([0, d3.max(data, function (d) { return d.N; })]);
-              svg.append("g")
-              .attr("class", "axis")
-              .attr("transform", "translate(0, "+(height-pad)+")")
-              .call(xAxis);
-              svg.append("g")
-              .attr("class", "axis")
-              .attr("transform", "translate("+(left_pad-pad)+", 0)")
-              .call(yAxis);
-              svg.selectAll('rect')
-              .data(data)
-              .enter()
-              .append('rect')
-              .attr('class', 'bar')
-              .attr('x', function (d) { return x(d.bucket); })
-              .attr('width', x.rangeBand())
-              .attr('y', height-pad)
-              .transition()
-              .delay(function (d) { return d.bucket*20; })
-              .duration(800)
-              .attr('y', function (d) { return y(d.N); })
-              .attr('height', function (d) { return height-pad - y(d.N); });
-              });
 
 
         }
 
+
     }
+    if(e.options[e.selectedIndex].text.toUpperCase() === "VUE GENERALE"){
+        document.getElementById("demo").innerHTML = "";
+        document.getElementById("pop").innerHTML = "";
+
+        var body = document.getElementById("pop")
+        tbl  = document.createElement('table');
+
+
+        for(var i = 103; i < 110; i++){
+            var tr = tbl.insertRow();
+            for(var j = 0; j < 3; j++){
+                if (i==103){
+                    var td = tr.insertCell();
+                    td.appendChild(document.createTextNode("Departement"));
+                    var td2 = tr.insertCell();
+                    td2.appendChild(document.createTextNode("TotalVoitures"));
+                    var td3 = tr.insertCell();
+                    td3.appendChild(document.createTextNode("Total Camions"));
+                    var td4 = tr.insertCell();
+                    td4.appendChild(document.createTextNode("Masse de particules en kg"));
+                    var td5 = tr.insertCell();
+                    td5.appendChild(document.createTextNode("Masse de dioxyde de soufre en kg"));
+                    j=3;
+                }else{
+                    var td = tr.insertCell();
+                    td.appendChild(document.createTextNode(worksheetf[i]['departement']))
+                    var td2 = tr.insertCell();
+                    td2.appendChild(document.createTextNode(worksheetf[i]['TotalVoiture']));
+                    var td3 = tr.insertCell();
+                    td3.appendChild(document.createTextNode(worksheetf[i]['CamTotal']));
+                    var td4 = tr.insertCell();
+                    td4.appendChild(document.createTextNode(result["features"][i - 104]["properties"]["pm10_kg"]));
+                    var td5 = tr.insertCell();
+                    td5.appendChild(document.createTextNode(result["features"][i - 104]["properties"]["so2_kg"]));
+
+                    break;
+                }
+
+
+
+            }
+        }
+        body.appendChild(tbl);
+
+        var width = 900,
+            height = 300,
+            pad = 20,
+            left_pad = 100;
+        var x = d3.scale.ordinal().rangeRoundBands([left_pad, width-pad], 0.1);
+        var y = d3.scale.linear().range([height-pad, pad]);
+        var xAxis = d3.svg.axis().scale(x).orient("bottom");
+        var yAxis = d3.svg.axis().scale(y).orient("left");
+        var svg = d3.select("#graph")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+        d3.json('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/resource/faa81490-2a38-42e5-8a43-3b326ba5fce9/download/geoserver-getfeature.application', function (data) {
+            data = d3.keys(data).map(function (key) {
+                return {bucket: Number(key),
+                    N: data[key]};
+            });
+            x.domain(data.map(function (d) { return d.bucket; }));
+            y.domain([0, d3.max(data, function (d) { return d.N; })]);
+            svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate(0, "+(height-pad)+")")
+                .call(xAxis);
+            svg.append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate("+(left_pad-pad)+", 0)")
+                .call(yAxis);
+            svg.selectAll('rect')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('class', 'bar')
+                .attr('x', function (d) { return x(d.bucket); })
+                .attr('width', x.rangeBand())
+                .attr('y', height-pad)
+                .transition()
+                .delay(function (d) { return d.bucket*20; })
+                .duration(800)
+                .attr('y', function (d) { return y(d.N); })
+                .attr('height', function (d) { return height-pad - y(d.N); });
+        });
+    }
+
+
+
 }
+
+
+function MiseEnFormeJson() {
+    //console.log(worksheetf[104]['Source : SDES-RSVERO '].toUpperCase())
+
+    for (i = 104; i!=110; i++) {
+        worksheetf[i]['departement'] = worksheetf[i]['Source : SDES-RSVERO '].toUpperCase();
+        delete worksheetf[i]['Source : SDES-RSVERO '];
+        worksheetf[i]['EssenceEtSupethInf6CV'] = worksheetf[i]["2.P.R.2. Parc au 1er janvier 2017 des voitures particulières d\'âge inférieur ou égal à 15 ans par département, région, source d\'énergie et classe de puissance administrative "];
+        delete worksheetf[i]["2.P.R.2. Parc au 1er janvier 2017 des voitures particulières d\'âge inférieur ou égal à 15 ans par département, région, source d\'énergie et classe de puissance administrative "];
+        worksheetf[i]['EssenceEtSupeth6CV7CV'] = worksheetf[i]['__EMPTY'];
+        delete worksheetf[i]['__EMPTY'];
+        worksheetf[i]['EssenceEtSupethSupEgale8CV'] = worksheetf[i]['__EMPTY_1'];
+        delete worksheetf[i]['__EMPTY_1'];
+        worksheetf[i]['ElectriciteEssenceInf6CV'] = worksheetf[i]['__EMPTY_2'];
+        delete worksheetf[i]['__EMPTY_2'];
+        worksheetf[i]['ElectriciteEssenceSupEgale6CV'] = worksheetf[i]['__EMPTY_3'];
+        delete worksheetf[i]['__EMPTY_3'];
+        worksheetf[i]['GazoleInf6CV'] = worksheetf[i]['__EMPTY_4'];
+        delete worksheetf[i]['__EMPTY_4'];
+        worksheetf[i]['GazoleSupEgale6CV'] = worksheetf[i]['__EMPTY_5'];
+        delete worksheetf[i]['__EMPTY_5'];
+        worksheetf[i]['EssenceGPLInf6CV'] = worksheetf[i]['__EMPTY_6'];
+        delete worksheetf[i]['__EMPTY_6'];
+        worksheetf[i]['EssenceGPLSupEgale6CV'] = worksheetf[i]['__EMPTY_7'];
+        delete worksheetf[i]['__EMPTY_7'];
+        worksheetf[i]['Electricite'] = worksheetf[i]['__EMPTY_8'];
+        delete worksheetf[i]['__EMPTY_8'];
+        worksheetf[i]['GazoleElectricite'] = worksheetf[i]['__EMPTY_9'];
+        delete worksheetf[i]['__EMPTY_9'];
+        worksheetf[i]['Autres'] = worksheetf[i]['__EMPTY_10'];
+        delete worksheetf[i]['__EMPTY_10'];
+        worksheetf[i]['TotalVoiture'] = worksheetf[i]['__EMPTY_11'];
+        delete worksheetf[i]['__EMPTY_11'];
+        worksheetf[i]['CamGazole'] = worksheetf[i]["5.P.R.3. Parc au 1er janvier 2017 des camionnettes et camions d\'âge inférieur ou égal à 20 ans par département, région et source d\'énergie"];
+        delete worksheetf[i]["5.P.R.3. Parc au 1er janvier 2017 des camionnettes et camions d\'âge inférieur ou égal à 20 ans par département, région et source d\'énergie"];
+        worksheetf[i]['CamEssence'] = worksheetf[i]['__EMPTY_13'];
+        delete worksheetf[i]['__EMPTY_13'];
+        worksheetf[i]['CamEssenceGPL'] = worksheetf[i]['__EMPTY_14'];
+        delete worksheetf[i]['__EMPTY_14'];
+        worksheetf[i]['CamElectricite'] = worksheetf[i]['__EMPTY_15'];
+        delete worksheetf[i]['__EMPTY_15'];
+        worksheetf[i]['CamAutres'] = worksheetf[i]['__EMPTY_16'];
+        delete worksheetf[i]['__EMPTY_16'];
+        worksheetf[i]['CamTotal'] = worksheetf[i]['__EMPTY_17'];
+        delete worksheetf[i]['__EMPTY_17'];
+
+
+    }
+    console.log(worksheetf)
+}
+
+
+
+
