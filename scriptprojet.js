@@ -80,6 +80,7 @@ function Affichage() {
             paragraph.appendChild(str1);
             paragraph.appendChild(saut);
 
+
             var width = 900,
             height = 300,
             pad = 20,
