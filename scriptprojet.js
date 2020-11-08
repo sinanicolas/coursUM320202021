@@ -56,7 +56,6 @@ oReq.onload = function(e) {
     console.log(typeof worksheetf[105]['__EMPTY_15'].toString());
     console.log(typeof worksheetf)
     MiseEnFormeJson()
-    //console.log(worksheetf[104]['2.P.R.2. Parc au 1er janvier 2017 des voitures particulières d\'âge inférieur ou égal à 15 ans par département, région, source d\'énergie et classe de puissance administrative ']);
 
 }
 
