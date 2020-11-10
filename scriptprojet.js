@@ -4,8 +4,9 @@ fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/r
                mode: 'cors',
                cache: 'default'}).then(
     function(response){
-        response.text().then(function(data){result = data})
+        response.json().then(function(data){result = data})
             }
 )
+
 
 
