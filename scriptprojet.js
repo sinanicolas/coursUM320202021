@@ -62,6 +62,7 @@ oReq.onload = function(e) {
 
     MiseEnFormeJson2007(worksheetf2007,110,116)
     console.log(worksheetf2007)
+
 }
 
 oReq.send();
@@ -150,8 +151,10 @@ function Affichage() {
                 }
 
             body.appendChild(tbl);
-
-
+            body.appendChild(document.createElement("br"));
+            carsPlot(worksheetf,i)
+            body.appendChild(document.createElement("br"));
+            PollutionPlot(result,i-104)
 
         }
 
@@ -357,6 +360,96 @@ function MiseEnFormeJson2007(data,deb,fin) {
         delete data[i]['__EMPTY_14'];
 
     }
+}
+
+function carsPlot(data,i) {
+
+
+    console.log(data)
+    var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+
+        title:{
+            text:"Les types de vehicules dans le departement : " + data[i]['departement']
+        },
+        axisX:{
+            interval: 1
+        },
+        axisY2:{
+            interlacedColor: "rgba(1,77,101,.2)",
+            gridColor: "rgba(1,77,101,.1)",
+            title: "Nombres"
+        },
+        data: [{
+            type: "bar",
+            name: "companies",
+            axisYType: "secondary",
+            color: "#014D65",
+            dataPoints: [
+                { y: data[i]['TotalVoiture'], label: "TotalVoitures" },
+                { y: data[i]['EssenceEtSupethInf6CV'], label: "EssenceEtSupethInf6CV" },
+                { y: data[i]['EssenceEtSupeth6CV7CV'], label: "EssenceEtSupeth6CV7CV" },
+                { y: data[i]['EssenceEtSupethSupEgale8CV'], label: "EssenceEtSupethSupEgale8CV" },
+                { y: data[i]['ElectriciteEssenceInf6CV'], label: "ElectriciteEssenceInf6CV" },
+                { y: data[i]['GazoleInf6CV'], label: "GazoleInf6CV" },
+                { y: data[i]['GazoleSupEgale6CV'], label: "GazoleSupEgale6CV" },
+                { y: data[i]['GazoleSupEgale6CV'], label: "GazoleSupEgale6CV" },
+                { y: data[i]['EssenceGPLInf6CV'], label: "EssenceGPLInf6CV" },
+                { y: data[i]['EssenceGPLSupEgale6CV'], label: "EssenceGPLSupEgale6CV" },
+                { y: data[i]['Electricite'], label: "Electricite" },
+                { y: data[i]['GazoleElectricite'], label: "GazoleElectricite" },
+                { y: data[i]['Autres'], label: "Autres Voitures" },
+                { y: data[i]['CamGazole'], label: "CamGazole" },
+                { y: data[i]['CamEssence'], label: "CamEssence" },
+                { y: data[i]['CamElectricite'], label: "CamElectricite" },
+                { y: data[i]['CamAutres'], label: "CamAutres" },
+                { y: data[i]['CamTotal'], label: "CamTotal" }
+            ]
+        }]
+    });
+    chart.render();
+
+
+}
+
+
+function PollutionPlot(data,i) {
+
+
+    console.log(data)
+    var chart = new CanvasJS.Chart("chartContainer2", {
+        animationEnabled: true,
+
+        title:{
+            text:"Les principales données polluante dans ce departement"
+        },
+        axisX:{
+            interval: 1
+        },
+        axisY2:{
+            interlacedColor: "rgba(240,43,96,.2)",
+            gridColor: "rgba(240,43,96,.1)",
+            title: ""
+        },
+        data: [{
+            type: "bar",
+            name: "companies",
+            axisYType: "secondary",
+            color: "#B50000",
+            dataPoints: [
+                { y: data["features"][i]["properties"]["pm10_kg"], label: "Masse de particules en suspension en kg" },
+                { y: data["features"][i]["properties"]["so2_kg"], label: "Masse de dioxyde de soufre en kg" },
+                { y: data["features"][i]["properties"]["pm25_kg"], label: "Masse de particules fines en kg" },
+                { y: data["features"][i]["properties"]["co_kg"], label: "Masse de monoxyde de carbone en kg" },
+                { y: data["features"][i]["properties"]["nox_kg"], label: "Masse d'oxydes d'azote en kg" },
+                { y: data["features"][i]["properties"]["c6h6_kg"], label: "Masse de benzène en kg" },
+                { y: data["features"][i]["properties"]["ni_kg"], label: "Masse de nitrate en kg" }
+            ]
+        }]
+    });
+    chart.render();
+
+
 }
 
 
