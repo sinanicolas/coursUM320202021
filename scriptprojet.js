@@ -12,6 +12,39 @@ fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/r
             result = data;
             result["features"][3]["properties"]["lib_dep"] = "BOUCHES-DU-RHÔNE";
 
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [result["features"][0]["properties"]["lib_dep"], result["features"][1]["properties"]["lib_dep"], result["features"][2]["properties"]["lib_dep"], result["features"][3]["properties"]["lib_dep"], result["features"][4]["properties"]["lib_dep"], result["features"][5]["properties"]["lib_dep"]],
+                    datasets: [{
+                        label: 'as_kg',
+                        data: [result["features"][0]["properties"]["as_kg"], result["features"][1]["properties"]["as_kg"], result["features"][2]["properties"]["as_kg"], result["features"][3]["properties"]["as_kg"], result["features"][4]["properties"]["as_kg"], result["features"][5]["properties"]["as_kg"]],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                }
+            });
+
         })
     }
 );
@@ -224,47 +257,6 @@ function Affichage() {
         }
         body.appendChild(tbl);
 
-        var width = 900,
-            height = 300,
-            pad = 20,
-            left_pad = 100;
-        var x = d3.scale.ordinal().rangeRoundBands([left_pad, width-pad], 0.1);
-        var y = d3.scale.linear().range([height-pad, pad]);
-        var xAxis = d3.svg.axis().scale(x).orient("bottom");
-        var yAxis = d3.svg.axis().scale(y).orient("left");
-        var svg = d3.select("#graph")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height);
-        d3.json('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/resource/faa81490-2a38-42e5-8a43-3b326ba5fce9/download/geoserver-getfeature.application', function (data) {
-            data = d3.keys(data).map(function (key) {
-                return {bucket: Number(key),
-                    N: data[key]};
-            });
-            x.domain(data.map(function (d) { return d.bucket; }));
-            y.domain([0, d3.max(data, function (d) { return d.N; })]);
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate(0, "+(height-pad)+")")
-                .call(xAxis);
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate("+(left_pad-pad)+", 0)")
-                .call(yAxis);
-            svg.selectAll('rect')
-                .data(data)
-                .enter()
-                .append('rect')
-                .attr('class', 'bar')
-                .attr('x', function (d) { return x(d.bucket); })
-                .attr('width', x.rangeBand())
-                .attr('y', height-pad)
-                .transition()
-                .delay(function (d) { return d.bucket*20; })
-                .duration(800)
-                .attr('y', function (d) { return y(d.N); })
-                .attr('height', function (d) { return height-pad - y(d.N); });
-        });
     }
 
 
@@ -362,6 +354,7 @@ function MiseEnFormeJson2007(data,deb,fin) {
     }
 }
 
+
 function carsPlot(data,i) {
 
 
@@ -451,6 +444,5 @@ function PollutionPlot(data,i) {
 
 
 }
-
 
 
