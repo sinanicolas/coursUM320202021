@@ -12,38 +12,36 @@ fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/r
             result = data;
             result["features"][3]["properties"]["lib_dep"] = "BOUCHES-DU-RHÔNE";
 
-            var ctx = document.getElementById('myChart').getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: [result["features"][0]["properties"]["lib_dep"], result["features"][1]["properties"]["lib_dep"], result["features"][2]["properties"]["lib_dep"], result["features"][3]["properties"]["lib_dep"], result["features"][4]["properties"]["lib_dep"], result["features"][5]["properties"]["lib_dep"]],
-                    datasets: [{
-                        label: 'as_kg',
-                        data: [result["features"][0]["properties"]["as_kg"], result["features"][1]["properties"]["as_kg"], result["features"][2]["properties"]["as_kg"], result["features"][3]["properties"]["as_kg"], result["features"][4]["properties"]["as_kg"], result["features"][5]["properties"]["as_kg"]],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
+            var chart = new CanvasJS.Chart("chartContainer3", {
+                animationEnabled: true,
+
+                title:{
+                    text:"Comparaison masse de monoxyde de carbone en kg entre les départements "
                 },
-                options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                }
+                axisX:{
+                    interval: 1
+                },
+                axisY2:{
+                    interlacedColor: "rgba(255,165,0,.2)",
+                    gridColor: "rgba(255,165,0,.1)",
+                    title: ""
+                },
+                data: [{
+                    type: "bar",
+                    name: "companies",
+                    axisYType: "secondary",
+                    color: "orange",
+                    dataPoints: [
+                        { y: result["features"][0]["properties"]["co_kg"], label: result["features"][0]["properties"]["lib_dep"] },
+                        { y: result["features"][1]["properties"]["co_kg"], label: result["features"][1]["properties"]["lib_dep"] },
+                        { y: result["features"][2]["properties"]["co_kg"], label: result["features"][2]["properties"]["lib_dep"] },
+                        { y: result["features"][3]["properties"]["co_kg"], label: result["features"][3]["properties"]["lib_dep"] },
+                        { y: result["features"][4]["properties"]["co_kg"], label: result["features"][4]["properties"]["lib_dep"] },
+                        { y: result["features"][5]["properties"]["co_kg"], label: result["features"][5]["properties"]["lib_dep"] }
+                    ]
+                }]
             });
+            chart.render();
 
         })
     }
@@ -444,5 +442,3 @@ function PollutionPlot(data,i) {
 
 
 }
-
-
