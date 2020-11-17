@@ -89,6 +89,15 @@ function Affichage() {
         if(e.options[e.selectedIndex].text.toUpperCase() === worksheetf[i]['departement'].toUpperCase()){
             document.getElementById("demo").innerHTML = "";
             document.getElementById("pop").innerHTML = "";
+            document.getElementById("chartContainer").innerHTML = "";
+            document.getElementById("chartContainer2").innerHTML = "";
+            document.getElementById("chartContainer3").innerHTML = "";
+            document.getElementById("chartContainer4").innerHTML = "";
+            document.getElementById("chartContainer5").innerHTML = "";
+            document.getElementById("chartContainer6").innerHTML = "";
+            document.getElementById("chartContainer7").innerHTML = "";
+            document.getElementById("chartContainer8").innerHTML = "";
+            document.getElementById("chartContainer9").innerHTML = "";
 
             var body = document.getElementById("pop")
             tbl  = document.createElement('table');
@@ -163,7 +172,15 @@ function Affichage() {
     if(e.options[e.selectedIndex].text.toUpperCase() === "VUE GENERALE"){
         document.getElementById("demo").innerHTML = "";
         document.getElementById("pop").innerHTML = "";
-
+        document.getElementById("chartContainer").innerHTML = "";
+        document.getElementById("chartContainer2").innerHTML = "";
+        document.getElementById("chartContainer3").innerHTML = "";
+        document.getElementById("chartContainer4").innerHTML = "";
+        document.getElementById("chartContainer5").innerHTML = "";
+        document.getElementById("chartContainer6").innerHTML = "";
+        document.getElementById("chartContainer7").innerHTML = "";
+        document.getElementById("chartContainer8").innerHTML = "";
+        document.getElementById("chartContainer9").innerHTML = "";
         var body = document.getElementById("pop")
         tbl  = document.createElement('table');
 
@@ -224,47 +241,8 @@ function Affichage() {
         }
         body.appendChild(tbl);
 
-        var width = 900,
-            height = 300,
-            pad = 20,
-            left_pad = 100;
-        var x = d3.scale.ordinal().rangeRoundBands([left_pad, width-pad], 0.1);
-        var y = d3.scale.linear().range([height-pad, pad]);
-        var xAxis = d3.svg.axis().scale(x).orient("bottom");
-        var yAxis = d3.svg.axis().scale(y).orient("left");
-        var svg = d3.select("#graph")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height);
-        d3.json('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/resource/faa81490-2a38-42e5-8a43-3b326ba5fce9/download/geoserver-getfeature.application', function (data) {
-            data = d3.keys(data).map(function (key) {
-                return {bucket: Number(key),
-                    N: data[key]};
-            });
-            x.domain(data.map(function (d) { return d.bucket; }));
-            y.domain([0, d3.max(data, function (d) { return d.N; })]);
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate(0, "+(height-pad)+")")
-                .call(xAxis);
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate("+(left_pad-pad)+", 0)")
-                .call(yAxis);
-            svg.selectAll('rect')
-                .data(data)
-                .enter()
-                .append('rect')
-                .attr('class', 'bar')
-                .attr('x', function (d) { return x(d.bucket); })
-                .attr('width', x.rangeBand())
-                .attr('y', height-pad)
-                .transition()
-                .delay(function (d) { return d.bucket*20; })
-                .duration(800)
-                .attr('y', function (d) { return y(d.N); })
-                .attr('height', function (d) { return height-pad - y(d.N); });
-        });
+        body.appendChild(document.createElement("br"));
+        VueGeneralPlot(worksheetf,result,104)
     }
 
 
@@ -421,7 +399,7 @@ function PollutionPlot(data,i) {
         animationEnabled: true,
 
         title:{
-            text:"Les principales données polluante dans ce departement"
+            text:"Le nombre total de voitures "
         },
         axisX:{
             interval: 1
@@ -453,4 +431,225 @@ function PollutionPlot(data,i) {
 }
 
 
+function VueGeneralPlot(data,data2,i) {
 
+
+    var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        title:{
+            text: "Nombre de voiture total en fonction du departement"
+        },
+        axisY: {
+            title: ""
+        },
+        data: [{
+            type: "column",
+            showInLegend: false,
+            dataPoints: [
+                { y: data[i]['TotalVoiture'], label: data[i]["departement"] },
+                { y: data[i+1]['TotalVoiture'], label: data[i+1]["departement"] },
+                { y: data[i+2]['TotalVoiture'], label: data[i+2]["departement"] },
+                { y: data[i+3]['TotalVoiture'], label: data[i+3]["departement"] },
+                { y: data[i+4]['TotalVoiture'], label: data[i+4]["departement"] },
+                { y: data[i+5]['TotalVoiture'], label: data[i+5]["departement"] }
+            ]
+        }]
+    });
+    chart.render();
+
+    var chart = new CanvasJS.Chart("chartContainer2", {
+        animationEnabled: true,
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        title:{
+            text: "Nombre de camions total en fonction du departement"
+        },
+        axisY: {
+            title: ""
+        },
+        data: [{
+            type: "column",
+            showInLegend: false,
+            dataPoints: [
+                { y: data[i]['CamTotal'], label: data[i]["departement"] },
+                { y: data[i+1]['CamTotal'], label: data[i+1]["departement"] },
+                { y: data[i+2]['CamTotal'], label: data[i+2]["departement"] },
+                { y: data[i+3]['CamTotal'], label: data[i+3]["departement"] },
+                { y: data[i+4]['CamTotal'], label: data[i+4]["departement"] },
+                { y: data[i+5]['CamTotal'], label: data[i+5]["departement"] }
+            ]
+        }]
+    });
+    chart.render();
+
+    var chart = new CanvasJS.Chart("chartContainer3", {
+        animationEnabled: true,
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        title:{
+            text: "Masse de particules en suspension (pm-10) en fonction du departement (en kg)"
+        },
+        axisY: {
+            title: ""
+        },
+        data: [{
+            type: "column",
+            showInLegend: false,
+            dataPoints: [
+                { y: data2["features"][i-104]["properties"]["pm10_kg"], label: data2["features"][i-104]["properties"]["lib_dep"] },
+                { y: data2["features"][i-103]["properties"]["pm10_kg"], label: data2["features"][i-103]["properties"]["lib_dep"] },
+                { y: data2["features"][i-102]["properties"]["pm10_kg"], label: data2["features"][i-102]["properties"]["lib_dep"] },
+                { y: data2["features"][i-101]["properties"]["pm10_kg"], label: data2["features"][i-100]["properties"]["lib_dep"] },
+                { y: data2["features"][i-100]["properties"]["pm10_kg"], label: data2["features"][i-100]["properties"]["lib_dep"] },
+                { y: data2["features"][i-99]["properties"]["pm10_kg"], label: data2["features"][i-99]["properties"]["lib_dep"] }
+            ]
+        }]
+    });
+    chart.render();
+
+    var chart = new CanvasJS.Chart("chartContainer4", {
+        animationEnabled: true,
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        title:{
+            text: "Masse de dioxyde de soufre en fonction du departement (en kg)"
+        },
+        axisY: {
+            title: ""
+        },
+        data: [{
+            type: "column",
+            showInLegend: false,
+            dataPoints: [
+                { y: data2["features"][i-104]["properties"]["so2_kg"], label: data2["features"][i-104]["properties"]["lib_dep"] },
+                { y: data2["features"][i-103]["properties"]["so2_kg"], label: data2["features"][i-103]["properties"]["lib_dep"] },
+                { y: data2["features"][i-102]["properties"]["so2_kg"], label: data2["features"][i-102]["properties"]["lib_dep"] },
+                { y: data2["features"][i-101]["properties"]["so2_kg"], label: data2["features"][i-101]["properties"]["lib_dep"] },
+                { y: data2["features"][i-100]["properties"]["so2_kg"], label: data2["features"][i-100]["properties"]["lib_dep"] },
+                { y: data2["features"][i-99]["properties"]["so2_kg"], label: data2["features"][i-99]["properties"]["lib_dep"] }
+            ]
+        }]
+    });
+    chart.render();
+
+    var chart = new CanvasJS.Chart("chartContainer5", {
+        animationEnabled: true,
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        title:{
+            text: "Masse de particules fines en fonction du departement (en kg)"
+        },
+        axisY: {
+            title: ""
+        },
+        data: [{
+            type: "column",
+            showInLegend: false,
+            dataPoints: [
+                { y: data2["features"][i-104]["properties"]["pm25_kg"], label: data2["features"][i-104]["properties"]["lib_dep"] },
+                { y: data2["features"][i-103]["properties"]["pm25_kg"], label: data2["features"][i-103]["properties"]["lib_dep"] },
+                { y: data2["features"][i-102]["properties"]["pm25_kg"], label: data2["features"][i-102]["properties"]["lib_dep"] },
+                { y: data2["features"][i-101]["properties"]["pm25_kg"], label: data2["features"][i-101]["properties"]["lib_dep"] },
+                { y: data2["features"][i-100]["properties"]["pm25_kg"], label: data2["features"][i-100]["properties"]["lib_dep"] },
+                { y: data2["features"][i-99]["properties"]["pm25_kg"], label: data2["features"][i-99]["properties"]["lib_dep"] }
+            ]
+        }]
+    });
+    chart.render();
+
+    var chart = new CanvasJS.Chart("chartContainer6", {
+        animationEnabled: true,
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        title:{
+            text: "Masse de monoxyde de carbone en fonction du departement (en kg)"
+        },
+        axisY: {
+            title: ""
+        },
+        data: [{
+            type: "column",
+            showInLegend: false,
+            dataPoints: [
+                { y: data2["features"][i-104]["properties"]["co_kg"], label: data2["features"][i-104]["properties"]["lib_dep"] },
+                { y: data2["features"][i-103]["properties"]["co_kg"], label: data2["features"][i-103]["properties"]["lib_dep"] },
+                { y: data2["features"][i-102]["properties"]["co_kg"], label: data2["features"][i-102]["properties"]["lib_dep"] },
+                { y: data2["features"][i-101]["properties"]["co_kg"], label: data2["features"][i-101]["properties"]["lib_dep"] },
+                { y: data2["features"][i-100]["properties"]["co_kg"], label: data2["features"][i-100]["properties"]["lib_dep"] },
+                { y: data2["features"][i-99]["properties"]["co_kg"], label: data2["features"][i-99]["properties"]["lib_dep"] }
+            ]
+        }]
+    });
+    chart.render();
+
+    var chart = new CanvasJS.Chart("chartContainer7", {
+        animationEnabled: true,
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        title:{
+            text: "Masse d'oxydes d'azote en fonction du departement (en kg)"
+        },
+        axisY: {
+            title: ""
+        },
+        data: [{
+            type: "column",
+            showInLegend: false,
+            dataPoints: [
+                { y: data2["features"][i-104]["properties"]["nox_kg"], label: data2["features"][i-104]["properties"]["lib_dep"] },
+                { y: data2["features"][i-103]["properties"]["nox_kg"], label: data2["features"][i-103]["properties"]["lib_dep"] },
+                { y: data2["features"][i-102]["properties"]["nox_kg"], label: data2["features"][i-102]["properties"]["lib_dep"] },
+                { y: data2["features"][i-101]["properties"]["nox_kg"], label: data2["features"][i-101]["properties"]["lib_dep"] },
+                { y: data2["features"][i-100]["properties"]["nox_kg"], label: data2["features"][i-100]["properties"]["lib_dep"] },
+                { y: data2["features"][i-99]["properties"]["nox_kg"], label: data2["features"][i-99]["properties"]["lib_dep"] }
+            ]
+        }]
+    });
+    chart.render();
+
+    var chart = new CanvasJS.Chart("chartContainer8", {
+        animationEnabled: true,
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        title:{
+            text: "Masse de benzène en fonction du departement (en kg)"
+        },
+        axisY: {
+            title: ""
+        },
+        data: [{
+            type: "column",
+            showInLegend: false,
+            dataPoints: [
+                { y: data2["features"][i-104]["properties"]["c6h6_kg"], label: data2["features"][i-104]["properties"]["lib_dep"] },
+                { y: data2["features"][i-103]["properties"]["c6h6_kg"], label: data2["features"][i-103]["properties"]["lib_dep"] },
+                { y: data2["features"][i-102]["properties"]["c6h6_kg"], label: data2["features"][i-102]["properties"]["lib_dep"] },
+                { y: data2["features"][i-101]["properties"]["c6h6_kg"], label: data2["features"][i-101]["properties"]["lib_dep"] },
+                { y: data2["features"][i-100]["properties"]["c6h6_kg"], label: data2["features"][i-100]["properties"]["lib_dep"] },
+                { y: data2["features"][i-99]["properties"]["c6h6_kg"], label: data2["features"][i-99]["properties"]["lib_dep"] }
+            ]
+        }]
+    });
+    chart.render();
+
+
+    var chart = new CanvasJS.Chart("chartContainer9", {
+        animationEnabled: true,
+        theme: "light2", // "light1", "light2", "dark1", "dark2"
+        title:{
+            text: "Masse de nitrate en fonction du departement (en kg)"
+        },
+        axisY: {
+            title: ""
+        },
+        data: [{
+            type: "column",
+            showInLegend: false,
+            dataPoints: [
+                { y: data2["features"][i-104]["properties"]["ni_kg"], label: data2["features"][i-104]["properties"]["lib_dep"] },
+                { y: data2["features"][i-103]["properties"]["ni_kg"], label: data2["features"][i-103]["properties"]["lib_dep"] },
+                { y: data2["features"][i-102]["properties"]["ni_kg"], label: data2["features"][i-102]["properties"]["lib_dep"] },
+                { y: data2["features"][i-101]["properties"]["ni_kg"], label: data2["features"][i-101]["properties"]["lib_dep"] },
+                { y: data2["features"][i-100]["properties"]["ni_kg"], label: data2["features"][i-100]["properties"]["lib_dep"] },
+                { y: data2["features"][i-99]["properties"]["ni_kg"], label: data2["features"][i-99]["properties"]["lib_dep"] }
+            ]
+        }]
+    });
+    chart.render();
+
+
+}
