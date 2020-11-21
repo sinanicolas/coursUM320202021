@@ -1,7 +1,7 @@
-console.log("c'est ici qu'il faut coder votre javascript")
 
 
 var result;
+var result2007;
 fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/resource/faa81490-2a38-42e5-8a43-3b326ba5fce9/download/geoserver-getfeature.application', { method: 'GET',
     headers: {},
     mode: 'cors',
@@ -11,8 +11,7 @@ fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/r
             console.log(data);
             result = data;
             result["features"][3]["properties"]["lib_dep"] = "BOUCHES-DU-RHÔNE";
-
-            var ctx = document.getElementById('myChart').getContext('2d');
+           /* var ctx = document.getElementById('myChart').getContext('2d');
             var myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -43,7 +42,24 @@ fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/r
                   responsive: true,
                   maintainAspectRatio: false,
                 }
-            });
+            });*/
+
+        })
+    }
+);
+
+
+
+fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/resource/d6ed6a99-bd24-4f34-a583-98c47c8d113b/download/geoserver-getfeature.application', { method: 'GET',
+    headers: {},
+    mode: 'cors',
+    cache: 'default'}).then(
+    function(response){
+        response.json().then(function(data){
+            console.log(data);
+            result2007 = data;
+            result2007["features"][3]["properties"]["lib_dep"] = "BOUCHES-DU-RHÔNE";
+
 
         })
     }
@@ -94,6 +110,8 @@ oReq.onload = function(e) {
     MiseEnFormeJson(worksheetf,103,110)
 
     MiseEnFormeJson2007(worksheetf2007,110,116)
+    worksheetf2007[110]['departement'] = "ALPES-DE-HAUTE-PROVENCE"
+
     console.log(worksheetf2007)
 
 }
@@ -197,6 +215,22 @@ function Affichage() {
             carsPlot(worksheetf,i)
             body.appendChild(document.createElement("br"));
             PollutionPlot(result,i-104)
+            body.appendChild(document.createElement("br"));
+            console.log(result2007)
+            for(var z = 110; z < 116; z++){
+                console.log(worksheetf[i]['departement'].length)
+                console.log(worksheetf2007[z]['departement'].length)
+                if(worksheetf[i]['departement'].toUpperCase()===worksheetf2007[z]['departement'].toUpperCase()){
+                    console.log("zaza")
+                    PlotComparaison1(worksheetf,worksheetf2007,i,z)
+
+                }
+
+            }
+            body.appendChild(document.createElement("br"));
+            console.log(result2007)
+            PlotComparaison2(result,result2007,i-104)
+
 
         }
 
@@ -357,7 +391,7 @@ function MiseEnFormeJson2007(data,deb,fin) {
         delete data[i]['__EMPTY_6'];
         data[i]['Electricite'] = data[i]['__EMPTY_7'];
         delete data[i]['__EMPTY_7'];
-        data[i]['TotalVoitures'] = data[i]['__EMPTY_9'];
+        data[i]['TotalVoiture'] = data[i]['__EMPTY_9'];
         delete data[i]['__EMPTY_9'];
         data[i]['VoitureAutres'] = data[i]['__EMPTY_8'];
         delete data[i]['__EMPTY_8'];
@@ -378,8 +412,7 @@ function MiseEnFormeJson2007(data,deb,fin) {
 
 function carsPlot(data,i) {
 
-
-    console.log(data)
+    
     var chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
 
@@ -435,7 +468,7 @@ function PollutionPlot(data,i) {
         animationEnabled: true,
 
         title:{
-            text:"Le nombre total de voitures "
+            text:"Les données polluantes dans ce département en 2017"
         },
         axisX:{
             interval: 1
@@ -467,6 +500,142 @@ function PollutionPlot(data,i) {
 }
 
 
+function PlotComparaison1(data,data2,i,j) {
+
+
+
+
+    var chart = new CanvasJS.Chart("chartContainer3", {
+        animationEnabled: true,
+        title:{
+            text: "Comparaison des données Auto 2017 vs 2007"
+        },
+        toolTip: {
+            shared: true
+        },
+        legend: {
+            cursor:"pointer",
+            itemclick: toggleDataSeries
+        },
+        data: [{
+            type: "column",
+            name: "2017",
+            legendText: "Data Vehicules 2017",
+            showInLegend: true,
+            dataPoints:[
+                { y: data[i]['TotalVoiture'], label: "TotalVoitures" },
+                { y: data[i]['EssenceEtSupethInf6CV'], label: "EssenceEtSupethInf6CV" },
+                { y: data[i]['EssenceEtSupeth6CV7CV'], label: "EssenceEtSupeth6CV7CV" },
+                { y: data[i]['EssenceEtSupethSupEgale8CV'], label: "EssenceEtSupethSupEgale8CV" },
+                { y: data[i]['GazoleInf6CV'], label: "GazoleInf6CV" },
+                { y: data[i]['GazoleSupEgale6CV'], label: "GazoleSupEgale6CV" },
+                { y: data[i]['Electricite'], label: "Electricite" },
+                { y: data[i]['CamGazole'], label: "CamGazole" },
+                { y: data[i]['CamEssence'], label: "CamEssence" },
+                { y: data[i]['CamTotal'], label: "CamTotal" }
+            ]
+        },
+            {
+                type: "column",
+                name: "2007",
+                legendText: "Data Vehicules 2007",
+                showInLegend: true,
+                dataPoints:[
+                    { y: data2[j]['TotalVoiture'], label: "TotalVoitures" },
+                    { y: data2[j]['EssenceInf6CV'], label: "EssenceEtSupethInf6CV" },
+                    { y: data2[j]['Essence6CV7CV'], label: "EssenceEtSupeth6CV7CV" },
+                    { y: data2[j]['EssenceSupEgale8CV'], label: "EssenceEtSupethSupEgale8CV" },
+                    { y: data2[j]['GazoleInf6CV'], label: "GazoleInf6CV" },
+                    { y: data2[j]['GazoleSupEgale6CV'], label: "GazoleSupEgale6CV" },
+                    { y: data2[j]['Electricite'], label: "Electricite" },
+                    { y: data2[j]['CamGazole'], label: "CamGazole" },
+                    { y: data2[j]['CamEssence'], label: "CamEssence" },
+                    { y: data2[j]['CamTotal'], label: "CamTotal" }
+                ]
+            }]
+    });
+    chart.render();
+
+    function toggleDataSeries(e) {
+        if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+            e.dataSeries.visible = false;
+        }
+        else {
+            e.dataSeries.visible = true;
+        }
+        chart.render();
+    }
+
+
+
+
+}
+
+
+
+function PlotComparaison2(data,data2,i) {
+
+
+
+    var chart = new CanvasJS.Chart("chartContainer4", {
+        animationEnabled: true,
+        title:{
+            text: "Comparaison des données Pollution 2017 vs 2007"
+        },
+        toolTip: {
+            shared: true
+        },
+        legend: {
+            cursor:"pointer",
+            itemclick: toggleDataSeries
+        },
+        data: [{
+            type: "column",
+            name: "2017",
+            legendText: "Data Pollution 2017",
+            showInLegend: true,
+            dataPoints:[
+                { y: data["features"][i]["properties"]["pm10_kg"], label: "Masse de particules en suspension en kg" },
+                { y: data["features"][i]["properties"]["so2_kg"], label: "Masse de dioxyde de soufre en kg" },
+                { y: data["features"][i]["properties"]["pm25_kg"], label: "Masse de particules fines en kg" },
+                { y: data["features"][i]["properties"]["co_kg"], label: "Masse de monoxyde de carbone en kg" },
+                { y: data["features"][i]["properties"]["nox_kg"], label: "Masse d'oxydes d'azote en kg" },
+                { y: data["features"][i]["properties"]["c6h6_kg"], label: "Masse de benzène en kg" },
+                { y: data["features"][i]["properties"]["ni_kg"], label: "Masse de nitrate en kg" }
+            ]
+        },
+            {
+                type: "column",
+                name: "2007",
+                legendText: "Data Pollution 2007",
+                showInLegend: true,
+                dataPoints:[
+                    { y: data2["features"][i]["properties"]["pm10_kg"], label: "Masse de particules en suspension en kg" },
+                    { y: data2["features"][i]["properties"]["so2_kg"], label: "Masse de dioxyde de soufre en kg" },
+                    { y: data2["features"][i]["properties"]["pm25_kg"], label: "Masse de particules fines en kg" },
+                    { y: data2["features"][i]["properties"]["co_kg"], label: "Masse de monoxyde de carbone en kg" },
+                    { y: data2["features"][i]["properties"]["nox_kg"], label: "Masse d'oxydes d'azote en kg" },
+                    { y: data2["features"][i]["properties"]["c6h6_kg"], label: "Masse de benzène en kg" },
+                    { y: data2["features"][i]["properties"]["ni_kg"], label: "Masse de nitrate en kg" }
+                ]
+            }]
+    });
+    chart.render();
+
+    function toggleDataSeries(e) {
+        if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+            e.dataSeries.visible = false;
+        }
+        else {
+            e.dataSeries.visible = true;
+        }
+        chart.render();
+    }
+
+
+
+
+}
 
 function VueGeneralPlot(data,data2,i) {
 
@@ -475,7 +644,7 @@ function VueGeneralPlot(data,data2,i) {
         animationEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
         title:{
-            text: "Nombre de voiture total en fonction du departement"
+            text: "Nombre de voiture total en fonction du departement en 2017 "
         },
         axisY: {
             title: ""
@@ -499,7 +668,7 @@ function VueGeneralPlot(data,data2,i) {
         animationEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
         title:{
-            text: "Nombre de camions total en fonction du departement"
+            text: "Nombre de camions total en fonction du departement en 2017 "
         },
         axisY: {
             title: ""
@@ -523,7 +692,7 @@ function VueGeneralPlot(data,data2,i) {
         animationEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
         title:{
-            text: "Masse de particules en suspension (pm-10) en fonction du departement (en kg)"
+            text: "Masse de particules en suspension (pm-10) en fonction du departement (en kg) en 2017 "
         },
         axisY: {
             title: ""
@@ -547,7 +716,7 @@ function VueGeneralPlot(data,data2,i) {
         animationEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
         title:{
-            text: "Masse de dioxyde de soufre en fonction du departement (en kg)"
+            text: "Masse de dioxyde de soufre en fonction du departement (en kg) en 2017 "
         },
         axisY: {
             title: ""
@@ -571,7 +740,7 @@ function VueGeneralPlot(data,data2,i) {
         animationEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
         title:{
-            text: "Masse de particules fines en fonction du departement (en kg)"
+            text: "Masse de particules fines en fonction du departement (en kg) en 2017 "
         },
         axisY: {
             title: ""
@@ -595,7 +764,7 @@ function VueGeneralPlot(data,data2,i) {
         animationEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
         title:{
-            text: "Masse de monoxyde de carbone en fonction du departement (en kg)"
+            text: "Masse de monoxyde de carbone en fonction du departement (en kg) en 2017 "
         },
         axisY: {
             title: ""
@@ -619,7 +788,7 @@ function VueGeneralPlot(data,data2,i) {
         animationEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
         title:{
-            text: "Masse d'oxydes d'azote en fonction du departement (en kg)"
+            text: "Masse d'oxydes d'azote en fonction du departement (en kg) en 2017 "
         },
         axisY: {
             title: ""
@@ -643,7 +812,7 @@ function VueGeneralPlot(data,data2,i) {
         animationEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
         title:{
-            text: "Masse de benzène en fonction du departement (en kg)"
+            text: "Masse de benzène en fonction du departement (en kg) en 2017 "
         },
         axisY: {
             title: ""
@@ -668,7 +837,7 @@ function VueGeneralPlot(data,data2,i) {
         animationEnabled: true,
         theme: "light2", // "light1", "light2", "dark1", "dark2"
         title:{
-            text: "Masse de nitrate en fonction du departement (en kg)"
+            text: "Masse de nitrate en fonction du departement (en kg) en 2017 "
         },
         axisY: {
             title: ""
