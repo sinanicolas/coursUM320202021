@@ -2,6 +2,7 @@
 
 var result;
 var result2007;
+//recuperation des donénes de pollution en 2017
 fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/resource/faa81490-2a38-42e5-8a43-3b326ba5fce9/download/geoserver-getfeature.application', { method: 'GET',
     headers: {},
     mode: 'cors',
@@ -10,14 +11,14 @@ fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/r
         response.json().then(function(data){
             console.log(data);
             result = data;
-            result["features"][3]["properties"]["lib_dep"] = "BOUCHES-DU-RHÔNE";
+            result["features"][3]["properties"]["lib_dep"] = "BOUCHES-DU-RHÔNE"; // permet de correspondre avec l'autre dataset
 
         })
     }
 );
 
 
-
+// recuperation des donénes de pollution en 2007
 fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/resource/d6ed6a99-bd24-4f34-a583-98c47c8d113b/download/geoserver-getfeature.application', { method: 'GET',
     headers: {},
     mode: 'cors',
@@ -37,6 +38,7 @@ fetch('https://trouver.datasud.fr/dataset/973765d0-a2a8-442d-bf3b-aec4e70fdd69/r
 
 
 
+//recuperation des données xls des données de vehicules
 
 var oReq = new XMLHttpRequest();
 var url = "https://trouver.datasud.fr/dataset/ddc457a2-6516-46ae-bcd0-49ac317c5c4a/resource/bf2bc02a-9db4-4485-8eb7-97fd3a859eea/download/oreca-vehicules-par-carburant_yzshdad.xls";
@@ -44,7 +46,7 @@ oReq.open("GET", url, true);
 oReq.responseType = "arraybuffer";
 
 var worksheetf
-var worksheetf2007
+var worksheetf2007 // les données de vehicule en 2007
 oReq.onload = function(e) {
     var arraybuffer = oReq.response;
 
@@ -125,7 +127,7 @@ function Affichage() {
 
 
 
-                for(var j = 0; j < 3; j++){
+                for(var j = 0; j < 3; j++){// on crée notre tableau
                     var tr = tbl.insertRow();
                     if (j==0){
 
@@ -190,7 +192,7 @@ function Affichage() {
                 console.log(worksheetf[i]['departement'].length)
                 console.log(worksheetf2007[z]['departement'].length)
                 if(worksheetf[i]['departement'].toUpperCase()===worksheetf2007[z]['departement'].toUpperCase()){
-                    console.log("zaza")
+
                     PlotComparaison1(worksheetf,worksheetf2007,i,z)
 
                 }
@@ -220,8 +222,8 @@ function Affichage() {
         var body = document.getElementById("pop")
         tbl  = document.createElement('table');
 
-
-        for(var i = 103; i < 110; i++){
+// Ici on chosit de montrer les données que l'on considère les plus importantes dans la vue generale.
+        for(var i = 103; i < 110; i++){ // indices qui nous interessent
             var tr = tbl.insertRow();
             for(var j = 0; j < 3; j++){
                 if (i==103){
@@ -288,7 +290,7 @@ function Affichage() {
 
 }
 
-
+// les fonctions miseEnforme qui remetent en forme les données et indices que l'on récupère
 function MiseEnFormeJson(data,deb,fin) {
     //console.log(worksheetf[104]['Source : SDES-RSVERO '].toUpperCase())
 
@@ -378,10 +380,11 @@ function MiseEnFormeJson2007(data,deb,fin) {
     }
 }
 
+// Affichage des plots dans chartContainer,chartContainer2,chartContainer3...
 
 function carsPlot(data,i) {
 
-    
+
     var chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
 
@@ -401,7 +404,7 @@ function carsPlot(data,i) {
             name: "companies",
             axisYType: "secondary",
             color: "#014D65",
-            dataPoints: [
+            dataPoints: [ // c'est ici qu'on selectionne les données à traiter
                 { y: data[i]['TotalVoiture'], label: "TotalVoitures" },
                 { y: data[i]['EssenceEtSupethInf6CV'], label: "EssenceEtSupethInf6CV" },
                 { y: data[i]['EssenceEtSupeth6CV7CV'], label: "EssenceEtSupeth6CV7CV" },
