@@ -1,3 +1,13 @@
+## Notre Projet : 
+
+Nous avons développé un moisonneur de données qui traite de l'indice de pollution dans la région PACA. Nous avons récuperé les données de 2017 sui conceerne les 6 départements et nous faisons le lien avec les données du nombre et type de véhicules dans cette même région.
+Nous avons implémenté une vue generale et la vue détaillé par département. Notre "clé de jointure" entre les deux tables est le nom du départemnt.
+Nous avons donc affiché des graphiques sur ces données pour essayer d'etablir le lien entre les deux types de données.
+Enfin, dans la vue détaillé (par departement) , on distinguera les données en 2007 et celles de 2017 pour y apercevoir l'évolution.
+La difficulté principale lors de ce projet fut de récupérer les données et de faire en sorte que ces données soient disponibles même au bout de 3 mois.
+
+
+
 # coursUM320202021
 le support de cours de 2020 - 2021
  
